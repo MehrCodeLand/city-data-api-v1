@@ -96,6 +96,9 @@ namespace city_data_api_v1.Controllers
             // apply
             patchDoc.ApplyTo( cityInfoToPatch , ModelState);
 
+            if(!TryValidateModel(cityInfoToPatch))
+                return BadRequest(modelState: ModelState);
+
             if(!ModelState.IsValid)
                 return BadRequest();
 
@@ -105,6 +108,27 @@ namespace city_data_api_v1.Controllers
 
 
             return Ok();
+
+        }
+
+        #endregion
+
+        #region Delete
+
+        [HttpDelete("{infoCityId}")]
+        public ActionResult DeleteCityInfo(int cityId , int infoCityId)
+        {
+            var city = CityDTOs.MyCities.Cities
+                .FirstOrDefault(x => x.Id == cityId);
+
+            if(city == null) return NotFound();
+
+            var point = city.InfoCities.FirstOrDefault(y => y.Id == infoCityId);
+            if(point == null) return NotFound();
+
+            city.InfoCities.Remove(point);
+
+            return NoContent();
 
         }
 
