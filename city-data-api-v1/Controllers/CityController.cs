@@ -21,11 +21,11 @@ namespace city_data_api_v1.Controllers
             return Ok(cities);
         }
 
-        [HttpGet("{cityId}" , Name = "getMyCity")]
-        public ActionResult GetCityById(int cityId)
+        [HttpGet("{id}" , Name = "GetCityById")]
+        public ActionResult GetCityById(int id)
         {
             var city = CityDTOs.MyCities.Cities
-                .FirstOrDefault(x => x.Id == cityId);
+                .FirstOrDefault(x => x.Id == id);
 
             if (city == null)
                 return NotFound();
@@ -34,6 +34,8 @@ namespace city_data_api_v1.Controllers
         }
 
         #endregion
+
+        #region Post
 
         // create city
         [HttpPost]
@@ -53,9 +55,11 @@ namespace city_data_api_v1.Controllers
                 Name = createCity.Name,
             };
 
-
             CityDTOs.MyCities.Cities.Add(newCity);
-            return CreatedAtAction("getMyCity" , newCity.Id , newCity);
+
+            return CreatedAtAction("GetCityById", new { id = newCity.Id } , newCity);
         }
+
+        #endregion
     }
 }
