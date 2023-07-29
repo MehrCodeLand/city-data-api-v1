@@ -11,6 +11,12 @@ namespace city_data_api_v1.Controllers
     public class CityInfoController : ControllerBase
     {
 
+        private readonly ILogger<CityInfoController> _logger;
+        public CityInfoController( ILogger<CityInfoController> logger )
+        {
+            _logger = logger ?? throw new ArgumentException(nameof(logger));
+        }
+
         #region Get
 
         [HttpGet(Name = "GetInfoCity")]
@@ -19,7 +25,10 @@ namespace city_data_api_v1.Controllers
             var city = CityDTOs.MyCities.Cities
                 .FirstOrDefault(x => x.Id == cityId);
             if (city == null)
+            {
+                _logger.LogInformation($"City with {cityId} wasnt found!");
                 return NotFound();
+            }
 
             return Ok(city.InfoCities);
         }
